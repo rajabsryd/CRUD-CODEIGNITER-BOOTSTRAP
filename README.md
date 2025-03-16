@@ -128,6 +128,136 @@ class Siswa extends CI_Controller {
     </tbody>
 </table>
 ```
+# Soal Esai dan Jawaban
+
+1. **Jelaskan langkah-langkah instalasi CodeIgniter 3 di komputer lokal menggunakan XAMPP!**
+   - Pastikan XAMPP sudah terinstal di komputer.
+   - Download CodeIgniter 3 dari situs resmi.
+   - Ekstrak file CodeIgniter dan pindahkan ke folder `htdocs` di XAMPP.
+   - Ubah nama folder sesuai dengan proyek yang diinginkan.
+   - Konfigurasi `base_url` di file `config.php`.
+   - Atur koneksi database di file `database.php`.
+   - Jalankan server dengan XAMPP dan akses melalui browser.
+
+2. **Mengapa kita perlu mengatur file `config.php` pada saat menginstal CodeIgniter 3? Jelaskan!**
+   - File `config.php` digunakan untuk menentukan pengaturan dasar aplikasi.
+   - `base_url` perlu disesuaikan agar aplikasi dapat berjalan dengan benar di localhost atau server.
+   - Konfigurasi lain seperti enkripsi, sesi, dan cookie juga diatur di file ini.
+
+3. **Bagaimana cara menghubungkan CodeIgniter 3 dengan database MySQL?**
+   - Buka file `application/config/database.php`.
+   - Atur parameter koneksi seperti hostname, username, password, dan database.
+   - Contoh konfigurasi:
+     ```php
+     $db['default'] = array(
+         'hostname' => 'localhost',
+         'username' => 'root',
+         'password' => '',
+         'database' => 'ci_database',
+         'dbdriver' => 'mysqli',
+     );
+     ```
+   - Simpan file dan pastikan database tersedia di phpMyAdmin.
+
+4. **Jelaskan peran file `Siswa_model.php` dalam aplikasi CodeIgniter yang telah dibuat!**
+   - `Siswa_model.php` berisi fungsi yang berhubungan dengan database.
+   - Fungsi dalam model ini digunakan untuk mengambil, menambah, mengedit, dan menghapus data siswa.
+   - Model ini memastikan pemisahan logika database dari controller dan view.
+
+5. **Bagaimana cara menampilkan data dari database menggunakan CodeIgniter? Jelaskan dengan menyertakan kode yang digunakan!**
+   - Buat model untuk mengambil data dari database:
+     ```php
+     class Siswa_model extends CI_Model {
+         public function get_all_siswa() {
+             return $this->db->get('siswa')->result();
+         }
+     }
+     ```
+   - Panggil model di controller:
+     ```php
+     class Siswa extends CI_Controller {
+         public function index() {
+             $this->load->model('Siswa_model');
+             $data['siswa'] = $this->Siswa_model->get_all_siswa();
+             $this->load->view('siswa_view', $data);
+         }
+     }
+     ```
+   - Tampilkan data di view:
+     ```php
+     <?php foreach ($siswa as $row): ?>
+         <tr>
+             <td><?= $row->nama; ?></td>
+             <td><?= $row->alamat; ?></td>
+             <td><?= $row->no_hp; ?></td>
+         </tr>
+     <?php endforeach; ?>
+     ```
+
+6. **Jelaskan bagaimana proses input data ke database dilakukan dalam aplikasi CodeIgniter! Sertakan contoh kode yang relevan!**
+   - Buat fungsi di model untuk menambahkan data:
+     ```php
+     public function insert_siswa($data) {
+         return $this->db->insert('siswa', $data);
+     }
+     ```
+   - Buat fungsi di controller untuk menangani input:
+     ```php
+     public function simpan() {
+         $data = [
+             'nama' => $this->input->post('nama'),
+             'alamat' => $this->input->post('alamat'),
+             'no_hp' => $this->input->post('no_hp')
+         ];
+         $this->Siswa_model->insert_siswa($data);
+         redirect('siswa');
+     }
+     ```
+
+7. **Bagaimana cara mengedit data yang sudah ada di database menggunakan CodeIgniter? Jelaskan dan sertakan contoh kodenya!**
+   - Buat fungsi di model untuk mengupdate data:
+     ```php
+     public function update_siswa($id, $data) {
+         return $this->db->where('id', $id)->update('siswa', $data);
+     }
+     ```
+   - Buat fungsi di controller:
+     ```php
+     public function update($id) {
+         $data = [
+             'nama' => $this->input->post('nama'),
+             'alamat' => $this->input->post('alamat'),
+             'no_hp' => $this->input->post('no_hp')
+         ];
+         $this->Siswa_model->update_siswa($id, $data);
+         redirect('siswa');
+     }
+     ```
+
+8. **Jelaskan fungsi dari method `delete_siswa()` yang terdapat di file `Siswa_model.php`!**
+   - Method `delete_siswa()` digunakan untuk menghapus data siswa berdasarkan ID yang diberikan.
+   - Contoh kode:
+     ```php
+     public function delete_siswa($id) {
+         return $this->db->where('id', $id)->delete('siswa');
+     }
+     ```
+
+9. **Bagaimana cara menampilkan tombol Edit dan Hapus pada tampilan data (`siswa_view.php`) menggunakan Bootstrap? Sertakan contoh kodenya!**
+   - Tambahkan tombol Edit dan Hapus dalam tabel:
+     ```php
+     <td>
+         <a href="<?= site_url('siswa/edit/'.$row->id); ?>" class="btn btn-warning">Edit</a>
+         <a href="<?= site_url('siswa/hapus/'.$row->id); ?>" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus data?');">Hapus</a>
+     </td>
+     ```
+
+10. **Mengapa penting untuk mengintegrasikan Bootstrap dengan CodeIgniter dalam pengembangan aplikasi web? Jelaskan pendapatmu!**
+    - Bootstrap membantu membuat tampilan aplikasi lebih menarik dan responsif.
+    - Mempermudah pembuatan UI dengan komponen siap pakai.
+    - Memastikan tampilan web yang konsisten di berbagai perangkat.
+
+---
 
 ## Kesimpulan
 Proyek ini merupakan implementasi CRUD sederhana menggunakan CodeIgniter 3 dengan Bootstrap. Dengan arsitektur MVC, pengembangan aplikasi menjadi lebih terstruktur dan mudah dikelola.
